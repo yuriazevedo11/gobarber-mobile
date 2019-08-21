@@ -1,8 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Image } from 'react-native';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 
 import logo from '~/assets/logo.png';
+
+import { signUpRequest } from '~/store/modules/auth/actions';
 
 import Background from '~/components/Background';
 
@@ -18,8 +21,17 @@ import {
 export default function SignUp({ navigation }) {
   const emailRef = useRef();
   const passwordRef = useRef();
+  const dispatch = useDispatch();
 
-  function handleSubmit() {}
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const loading = useSelector(state => state.auth.loading);
+
+  function handleSubmit() {
+    dispatch(signUpRequest(name, email, password));
+  }
 
   return (
     <Background>
@@ -28,15 +40,18 @@ export default function SignUp({ navigation }) {
 
         <Form>
           <FormInput
+            value={name}
             icon="person-outline"
             autoCorrect={false}
             placeholder="Nome completo"
             onSubmitEditing={() => emailRef.current.focus()}
             blurOnSubmit={false}
             returnKeyType="next"
+            onChangeText={setName}
           />
 
           <FormInput
+            value={email}
             icon="mail-outline"
             keyboardType="email-address"
             autoCorrect={false}
@@ -46,18 +61,21 @@ export default function SignUp({ navigation }) {
             blurOnSubmit={false}
             returnKeyType="next"
             ref={emailRef}
+            onChangeText={setEmail}
           />
 
           <FormInput
+            value={password}
             icon="lock-outline"
             placeholder="Sua senha secreta"
             secureTextEntry
             returnKeyType="send"
             onSubmitEditing={handleSubmit}
             ref={passwordRef}
+            onChangeText={setPassword}
           />
 
-          <SubmitButton onPress={handleSubmit}>
+          <SubmitButton loading={loading} onPress={handleSubmit}>
             Criar conta gratuita
           </SubmitButton>
 
