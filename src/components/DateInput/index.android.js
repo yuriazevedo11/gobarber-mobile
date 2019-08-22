@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { DatePickerAndroid } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { format, isBefore } from 'date-fns';
+import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import PropTypes from 'prop-types';
 
@@ -15,6 +15,7 @@ export default function DateInput({ date, onChange }) {
 
   async function handleOpenPicker() {
     const { action, year, month, day } = await DatePickerAndroid.open({
+      minDate: new Date(),
       mode: 'spinner',
       date,
     });
@@ -22,9 +23,7 @@ export default function DateInput({ date, onChange }) {
     if (action === DatePickerAndroid.dateSetAction) {
       const selectedDate = new Date(year, month, day);
 
-      if (isBefore(new Date(), selectedDate)) {
-        onChange(selectedDate);
-      }
+      onChange(selectedDate);
     }
   }
 
